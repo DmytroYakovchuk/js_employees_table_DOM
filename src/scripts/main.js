@@ -111,19 +111,19 @@ form.addEventListener('submit', (e) => {
   const salary = form.salary.value.trim();
 
   if (!firstName || !position || !office || !age || !salary) {
-    showNotification('write all list', 'error');
+    showNotification('fill in all fields', 'error');
 
     return;
   }
 
   if (firstName.length < 4) {
-    showNotification('Name will not short 4 letters', 'error');
+    showNotification('Name must be at least 4 characters long', 'error');
 
     return;
   }
 
   if (age < 18 || age > 90) {
-    showNotification('age will be 18 - 90 yers', 'error');
+    showNotification('age must be from 18 to 90 years', 'error');
 
     return;
   }
@@ -140,7 +140,7 @@ form.addEventListener('submit', (e) => {
 
 // change cells
 
-let eCell = null; // ссылка на ячейку в режиме редактирования
+let eCell = null;
 
 table.addEventListener('dblclick', (e) => {
   const cell = e.target.closest('td');
@@ -148,13 +148,11 @@ table.addEventListener('dblclick', (e) => {
   if (!cell) {
     return;
   }
-  // Если редактируется другая ячейка — закрыть её
 
   if (eCell && eCell !== cell) {
     finishEdit(eCell);
   }
 
-  // Если мы кликаем по ячейке, которая уже редактируется — ничего не делаем
   if (eCell === cell) {
     return;
   }
@@ -163,6 +161,9 @@ table.addEventListener('dblclick', (e) => {
 
 function startEdit(cell) {
   const oldText = cell.textContent;
+
+  cell.dataset.oldText = oldText;
+
   const input = document.createElement('input');
 
   input.type = 'text';
@@ -173,10 +174,8 @@ function startEdit(cell) {
   cell.appendChild(input);
   input.focus();
 
-  // При потере фокуса — сохранить
   input.addEventListener('blur', () => finishEdit(cell));
 
-  // Обработка Enter и Escape
   input.addEventListener('keydown', (ev) => {
     if (ev.key === 'Enter') {
       input.blur();
@@ -188,14 +187,18 @@ function startEdit(cell) {
     }
   });
 
-  eCell = cell; // запомнить, какая ячейка редактируется
+  eCell = cell;
 }
 
 function finishEdit(cell) {
   const input = cell.querySelector('input');
 
   if (input) {
-    cell.textContent = input.value.trim();
+    const newValue = input.value.trim();
+
+    const oldValue = cell.dataset.oldText;
+
+    cell.textContent = newValue || oldValue;
   }
   eCell = null;
 }
