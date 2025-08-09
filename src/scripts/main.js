@@ -46,8 +46,9 @@ headers.forEach((th, index) => {
 
 table.addEventListener('click', (e) => {
   const tr = e.target.closest('tr');
+  const tbody = table.querySelector('tbody');
 
-  if (!tr) {
+  if (!tr || !tbody.contains(tr)) {
     return;
   }
 
@@ -116,7 +117,7 @@ form.addEventListener('submit', (e) => {
   }
 
   if (firstName.length < 4) {
-    showNotification('Name will be not short 4 letters', 'error');
+    showNotification('Name will not short 4 letters', 'error');
 
     return;
   }
@@ -139,30 +140,43 @@ form.addEventListener('submit', (e) => {
 
 // change cells
 
-const eCell = null;
+let eCell = null; // ссылка на ячейку в режиме редактирования
 
 table.addEventListener('dblclick', (e) => {
   const cell = e.target.closest('td');
 
-  if (!cell || cell.querySelector('input') || eCell) {
+  if (!cell) {
     return;
   }
+  // Если редактируется другая ячейка — закрыть её
 
+  if (eCell && eCell !== cell) {
+    finishEdit(eCell);
+  }
+
+  // Если мы кликаем по ячейке, которая уже редактируется — ничего не делаем
+  if (eCell === cell) {
+    return;
+  }
+  startEdit(cell);
+});
+
+function startEdit(cell) {
   const oldText = cell.textContent;
   const input = document.createElement('input');
 
   input.type = 'text';
   input.className = 'cell-input';
   input.value = oldText;
+
   cell.textContent = '';
   cell.appendChild(input);
   input.focus();
 
-  input.addEventListener(
-    'blur',
-    () => (cell.textContent = input.value || oldText),
-  );
+  // При потере фокуса — сохранить
+  input.addEventListener('blur', () => finishEdit(cell));
 
+  // Обработка Enter и Escape
   input.addEventListener('keydown', (ev) => {
     if (ev.key === 'Enter') {
       input.blur();
@@ -170,6 +184,18 @@ table.addEventListener('dblclick', (e) => {
 
     if (ev.key === 'Escape') {
       cell.textContent = oldText;
+      eCell = null;
     }
   });
-});
+
+  eCell = cell; // запомнить, какая ячейка редактируется
+}
+
+function finishEdit(cell) {
+  const input = cell.querySelector('input');
+
+  if (input) {
+    cell.textContent = input.value.trim();
+  }
+  eCell = null;
+}
