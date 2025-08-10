@@ -37,25 +37,28 @@ headers.forEach((th, index) => {
       return sortAsc ? comparison : -comparison;
     });
 
-    tbody.innerHTML = '';
-    tbody.append(...rowsSorted);
+    tbody.replaceChildren(...rowsSorted);
   });
 });
 
 // highlight lines
 
+let activeRow = null;
+
 table.addEventListener('click', (e) => {
   const tr = e.target.closest('tr');
   const tbody = table.querySelector('tbody');
 
-  if (!tr || !tbody.contains(tr)) {
+  if (!tr || !tbody.contains(tr) || tr === activeRow) {
     return;
   }
 
-  table
-    .querySelectorAll('tbody tr')
-    .forEach((row) => row.classList.remove('active'));
+  if (activeRow) {
+    activeRow.classList.remove('active');
+  }
+
   tr.classList.add('active');
+  activeRow = tr;
 });
 
 // add form
@@ -140,7 +143,7 @@ form.addEventListener('submit', (e) => {
 
 // change cells
 
-let eCell = null;
+let editingCell = null;
 
 table.addEventListener('dblclick', (e) => {
   const cell = e.target.closest('td');
@@ -149,11 +152,11 @@ table.addEventListener('dblclick', (e) => {
     return;
   }
 
-  if (eCell && eCell !== cell) {
-    finishEdit(eCell);
+  if (editingCell && editingCell !== cell) {
+    finishEdit(editingCell);
   }
 
-  if (eCell === cell) {
+  if (editingCell === cell) {
     return;
   }
   startEdit(cell);
@@ -183,11 +186,11 @@ function startEdit(cell) {
 
     if (ev.key === 'Escape') {
       cell.textContent = oldText;
-      eCell = null;
+      editingCell = null;
     }
   });
 
-  eCell = cell;
+  editingCell = cell;
 }
 
 function finishEdit(cell) {
@@ -200,5 +203,5 @@ function finishEdit(cell) {
 
     cell.textContent = newValue || oldValue;
   }
-  eCell = null;
+  editingCell = null;
 }
