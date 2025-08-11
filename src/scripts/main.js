@@ -107,7 +107,9 @@ function showNotification(message, type) {
   notification.style.padding = '10px 14px';
   notification.style.background = '#fff';
   notification.style.border = '1px solid #ccc';
-  notification.style.borderLeft = '4px solid ' + (type === 'error' ? '#e74c3c' : '#2ecc71');
+
+  notification.style.borderLeft =
+    '4px solid ' + (type === 'error' ? '#e74c3c' : '#2ecc71');
   notification.style.borderRadius = '4px';
   notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
   notification.style.fontFamily = 'Arial, sans-serif';
