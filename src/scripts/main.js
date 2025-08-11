@@ -104,8 +104,8 @@ function showNotification(message, type) {
   }, 3000);
 }
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+form.addEventListener('submit', (el) => {
+  el.preventDefault();
 
   const firstName = form.name.value.trim();
   const position = form.position.value.trim();
