@@ -89,18 +89,42 @@ document.body.append(form);
 
 // check form and add lines
 
+form.classList.add('new-employee-form');
+form.style.position = 'relative';
+document.body.append(form);
+
 const notification = document.createElement('div');
 
 notification.setAttribute('data-qa', 'notification');
-document.body.prepend(notification);
+form.style.position = 'relative';
+form.appendChild(notification);
 
 function showNotification(message, type) {
-  notification.textContent = message;
+  notification.style.position = 'absolute';
+  notification.style.top = '50px';
+  notification.style.right = '-240px';
+  notification.style.width = '220px';
+  notification.style.padding = '10px 14px';
+  notification.style.background = '#fff';
+  notification.style.border = '1px solid #ccc';
+  notification.style.borderLeft = '4px solid ' + (type === 'error' ? '#e74c3c' : '#2ecc71');
+  notification.style.borderRadius = '4px';
+  notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+  notification.style.fontFamily = 'Arial, sans-serif';
+  notification.style.fontSize = '14px';
+  notification.style.zIndex = '999';
+  notification.style.opacity = '1';
+  notification.style.pointerEvents = 'auto';
+  notification.style.transition = 'opacity 0.3s ease';
+
+  notification.innerHTML = `<strong>${type === 'error' ? 'Error' : 'Success'}</strong>
+    <div>${message}</div>`;
   notification.className = type;
 
   setTimeout(() => {
-    notification.textContent = '';
-    notification.className = '';
+    notification.style.opacity = '0';
+    notification.style.pointerEvents = 'none';
+    notification.innerHTML = '';
   }, 3000);
 }
 
@@ -114,7 +138,7 @@ form.addEventListener('submit', (el) => {
   const salary = form.salary.value.trim();
 
   if (!firstName || !position || !office || !age || !salary) {
-    showNotification('fill in all fields', 'error');
+    showNotification('fill out all required fields', 'error');
 
     return;
   }
