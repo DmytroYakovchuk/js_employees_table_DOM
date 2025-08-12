@@ -85,13 +85,12 @@ form.innerHTML = `
   <label>Salary: <input name="salary" type="number" data-qa="salary"></label>
   <button type="submit">Save to table</button>
 `;
-document.body.append(form);
+table.after(form);
 
 // check form and add lines
 
 form.classList.add('new-employee-form');
-form.style.position = 'relative';
-document.body.append(form);
+table.after(form);
 
 const notification = document.createElement('div');
 
@@ -102,7 +101,7 @@ form.appendChild(notification);
 function showNotification(message, type) {
   notification.style.position = 'absolute';
   notification.style.top = '50px';
-  notification.style.right = '-240px';
+  notification.style.right = '0';
   notification.style.width = '220px';
   notification.style.padding = '10px 14px';
   notification.style.background = '#fff';
