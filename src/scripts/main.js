@@ -100,7 +100,7 @@ form.appendChild(notification);
 
 function showNotification(message, type) {
   notification.style.position = 'absolute';
-  notification.style.top = '50px';
+  notification.style.top = '270px';
   notification.style.right = '0';
   notification.style.width = '220px';
   notification.style.padding = '10px 14px';
